@@ -20,10 +20,14 @@ export default function UserNode({
           lastName={user.lastName}
           photo={user.photo || ""}
         />
-        <div>
-          {" "}
-          {user.firstName} {user.lastName} |{" "}
-          <a href={`mailto:${user.email}`}>{user.email}</a>
+        <div className="flex gap-2">
+          {user.firstName} {user.lastName} <span>|</span>
+          <a
+            className="underline text-indigo-400"
+            href={`mailto:${user.email}`}
+          >
+            {user.email}
+          </a>
         </div>
         <div className="flex justify-end items-center flex-1">
           <div className="hidden group-hover:flex">

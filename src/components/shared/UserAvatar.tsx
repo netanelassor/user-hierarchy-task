@@ -1,5 +1,3 @@
-import { User } from "../users-hierarchy/user.types";
-
 type UserAvatarProps = {
   photo: string;
   firstName: string;
