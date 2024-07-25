@@ -1,9 +1,0 @@
-#root {
-width: 100%;  
-margin: 0;
-  text-align: center;
-}
-
-.main-data-container {
-  height: calc(100% - 80px);
-}

@@ -11,16 +11,22 @@ export const HEADER = {
 
 export const ABOUT_ME = {
   TITLE: "About Me",
-
+  EXPERIENCE: "EXPERIENCE",
 };
 
 export const LOGIN = {
-  USER_NAME: "User Name",
+  EMAIL: "Email Address",
   PASSWORD: "Password",
   LOGIN_BTN: "Login",
+  TITLE:"Sign in to your account",
   VALIDATION_FAILED: "The username or password is incorrect",
 };
 
 export const USER_HIERARCHY = {
   TITLE: "User Hierarchy",
+};
+
+export const ERROR_PAGE = {
+  TITLE: "Oops!",
+  MESSAGE: "Sorry, an unexpected error has occurred.",
 };
