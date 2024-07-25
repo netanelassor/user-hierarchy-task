@@ -31,7 +31,7 @@ export default function UserNode({
         </div>
         <div className="flex justify-end items-center flex-1">
           <div className="hidden group-hover:flex">
-            <Button outline pill>
+            <Button outline pill gradientDuoTone="purpleToBlue">
               <FaPencilAlt className="h-4 w-4" />
             </Button>
           </div>
