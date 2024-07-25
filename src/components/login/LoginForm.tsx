@@ -8,8 +8,11 @@ import { fetchLogin, loginActions } from "./login.service";
 import { fetchUsers } from "../users-hierarchy/users-hierarchy.service";
 import { queryClient } from "../../utils/query-client";
 
-const getUsers = async () =>
-  await queryClient.fetchQuery({ queryKey: ["users"], queryFn: fetchUsers });
+const getUsers = () => queryClient.fetchQuery({ queryKey: ["users"], queryFn: fetchUsers });
+const setLogin = (data:LoginData) => queryClient.fetchQuery({
+  queryKey: ["login"],
+  queryFn: () => fetchLogin(data),
+});
 
 const demoLoginUser: LoginData = {
   password: "4XdnU2aZ",
@@ -22,26 +25,25 @@ export default function LoginForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isWrongLogin, setIsWrongLogin] = useState<boolean>(false);
 
-  const setLogin = async () =>
-    await queryClient.fetchQuery({
-      queryKey: ["login"],
-      queryFn: () => fetchLogin(formData),
-    });
 
-  async function handleLogin(event: any) {
+
+  async function handleLogin(event: any):Promise<void> {
     setIsWrongLogin(false);
     setIsLoading(true);
     event.preventDefault();
     try {
-      const loggedUserId = await setLogin();
-      setIsLoading(false);
+      const loggedUserId = await setLogin(formData);
 
       if (!loggedUserId) {
         setIsWrongLogin(true);
+        setIsLoading(false);
+        return;
       }
+
       const users = await getUsers();
       if (users && loggedUserId) {
         loginActions(users, loggedUserId);
+        setIsLoading(false);
         navigate("../");
       }
     } catch (error) {
@@ -52,8 +54,8 @@ export default function LoginForm(): JSX.Element {
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
 
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
     }));
   };
