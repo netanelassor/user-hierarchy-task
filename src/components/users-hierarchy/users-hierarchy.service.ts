@@ -1,7 +1,7 @@
 import { ENDPOINT } from "../../constants/endpoints.constants";
 import { User, UserMap } from "./user.types";
 
-export async function fetchUsers({ signal }: any): Promise<UserMap> {
+export async function fetchUsers({ signal }:any): Promise<User[] | null> {
   const response = await fetch(`${ENDPOINT.getUser}.json`, { signal });
 
   if (!response.ok) {
@@ -11,7 +11,7 @@ export async function fetchUsers({ signal }: any): Promise<UserMap> {
     throw error;
   }
   const userList = await response.json();
-  return groupByManagerId(userList);
+  return userList;
 }
 
 

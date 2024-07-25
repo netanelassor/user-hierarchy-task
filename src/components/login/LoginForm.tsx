@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { GENERAL, LOGIN } from "../../constants/locals/en-Us.constants";
 import Logo from "../../assets/gong.svg";
-import { useQuery } from "@tanstack/react-query";
-import { logIn } from "./login.service";
-import { isLoggedIn } from "../../utils/auth";
+import { fetchLogin, loginActions } from "./login.service";
+import { fetchUsers } from "../users-hierarchy/users-hierarchy.service";
+import { queryClient } from "../../utils/query-client";
+
+const getUsers = async () =>
+  await queryClient.fetchQuery({ queryKey: ["users"], queryFn: fetchUsers });
 
 const demoLoginUser: LoginData = {
   password: "4XdnU2aZ",
@@ -16,27 +19,34 @@ const demoLoginUser: LoginData = {
 export default function LoginForm(): JSX.Element {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginData>(demoLoginUser);
-  const [loginFnTrigger, setLoginFnTrigger] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isWrongLogin, setIsWrongLogin] = useState<boolean>(false);
 
-  const {
-    data: loggedUser,
-    isLoading,
-  } = useQuery({
-    queryKey: ["login"],
-    queryFn: () => logIn(formData),
-    enabled: loginFnTrigger,
-  });
+  const setLogin = async () =>
+    await queryClient.fetchQuery({
+      queryKey: ["login"],
+      queryFn: () => fetchLogin(formData),
+    });
 
-  function handleLogin(event: any) {
+  async function handleLogin(event: any) {
+    setIsWrongLogin(false);
+    setIsLoading(true);
     event.preventDefault();
-    //const loggedInUserId = await logIn(formData);
-    setLoginFnTrigger(true);
-  }
+    try {
+      const loggedUserId = await setLogin();
+      setIsLoading(false);
 
-  if (loggedUser && isLoggedIn()) {
-    console.log('loggedUser', loggedUser);
-    setLoginFnTrigger(false);
-    navigate("../");
+      if (!loggedUserId) {
+        setIsWrongLogin(true);
+      }
+      const users = await getUsers();
+      if (users && loggedUserId) {
+        loginActions(users, loggedUserId);
+        navigate("../");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const handleInputChange = (event: any) => {
@@ -98,20 +108,13 @@ export default function LoginForm(): JSX.Element {
                 gradientDuoTone="purpleToBlue"
                 pill
                 type="submit"
-                disabled={!formData.email || !formData.password}>
+                disabled={!formData.email || !formData.password || isLoading}
+                isProcessing={isLoading}
+              >
                 {LOGIN.LOGIN_BTN}
               </Button>
-              {isLoading && (
-                <Button
-                  gradientDuoTone="purpleToBlue"
-                  pill
-                  disabled={true}
-                  isProcessing
-                >
-                  {LOGIN.LOGIN_BTN}
-                </Button>
-              )}
             </div>
+            {isWrongLogin && <div>{LOGIN.VALIDATION_FAILED}</div>}
           </form>
         </Card>
       </div>

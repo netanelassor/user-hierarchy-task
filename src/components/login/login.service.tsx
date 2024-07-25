@@ -3,7 +3,7 @@ import { setUserInLocalStorage } from "../../utils/auth";
 import { User } from "../users-hierarchy/user.types";
 import { LoginData } from "./login.types";
 
-export async function logIn(loginData: LoginData): Promise<User | null> {
+export async function fetchLogin(loginData: LoginData): Promise<number | null> {
   const secret = encode(loginData);
   const response = await fetch(`${ENDPOINT.login}/${secret}.json`);
 
@@ -14,28 +14,19 @@ export async function logIn(loginData: LoginData): Promise<User | null> {
     throw error;
   }
   const userId: number = await response.json();
-  const user: User | null = await fetchUserDetails(userId);
 
-  if (user) {
-    setUserInLocalStorage(user);
-    return user;
-  }
-  return null;
+  return userId;
 }
 
-async function fetchUserDetails(id: number): Promise<User | null> {
-  const usersResponse = await fetch(`${ENDPOINT.getUser}.json`);
-
-  if (!usersResponse.ok) {
-    const error: any = new Error("An error occurred while fetching the events");
-    error.code = usersResponse.status;
-    error.info = await usersResponse.json();
-    throw error;
+export function loginActions(users: User[], id: number) {
+  const user: User | null = gethUserDetails(users, id);
+  if (user) {
+    setUserInLocalStorage(user);
   }
-  const userList: User[] = await usersResponse.json();
+}
 
-  const user = userList.find((usr: User) => usr.id === id);
-
+function gethUserDetails(users: User[], id: number): User | null {
+  const user = users.find((usr: User) => usr.id === id);
   return user ? user : null;
 }
 
