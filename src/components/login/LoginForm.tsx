@@ -36,18 +36,19 @@ export default function LoginForm(): JSX.Element {
 
       if (!loggedUserId) {
         setIsWrongLogin(true);
-        setIsLoading(false);
         return;
       }
 
       const users = await getUsers();
       if (users && loggedUserId) {
         loginActions(users, loggedUserId);
-        setIsLoading(false);
         navigate("../");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+
     }
   }
 
