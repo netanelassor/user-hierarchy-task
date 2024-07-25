@@ -6,7 +6,7 @@ export default function HeaderNavigation(): JSX.Element {
   const SidebarList: NavItemType[] = [
     {
       name: HEADER.USER_HIERARCHY_NAV,
-      routeName: "/users-tree",
+      routeName: "/",
     },
     {
       name: HEADER.ABOUT_NAV,
