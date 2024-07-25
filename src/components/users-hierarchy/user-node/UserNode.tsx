@@ -1,7 +1,7 @@
 import { Button } from "flowbite-react";
 import UserAvatar from "../../shared/UserAvatar";
 import { User, UserMap } from "../user.types";
-import { FaPlus, FaMinus, FaPencilAlt } from "react-icons/fa";
+import { FaPlus, FaMinus, FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 
 type UserNodeProps = {
   user: User;
@@ -33,6 +33,9 @@ export default function UserNode({
           <div className="hidden group-hover:flex">
             <Button outline pill gradientDuoTone="purpleToBlue">
               <FaPencilAlt className="h-4 w-4" />
+            </Button>
+            <Button outline pill gradientDuoTone="purpleToBlue">
+              <FaRegTrashAlt className="h-4 w-4" />
             </Button>
           </div>
         </div>

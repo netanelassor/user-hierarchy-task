@@ -21,7 +21,7 @@ export default function UserHierarchy(): JSX.Element {
 
       {usersByManagers && (
         <div className="flex flex-col text-start gap-4 p-2">
-          {usersByManagers["root"]?.map((usr: User, index) => {
+          {usersByManagers.root?.map((usr: User, index) => {
               return (
                 <UserNode
                   key={index}

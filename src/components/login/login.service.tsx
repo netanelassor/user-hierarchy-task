@@ -14,7 +14,6 @@ export async function fetchLogin(loginData: LoginData): Promise<number | null> {
     throw error;
   }
   const userId: number = await response.json();
-
   return userId;
 }
 
@@ -29,6 +28,9 @@ function gethUserDetails(users: User[], id: number): User | null {
   const user = users.find((usr: User) => usr.id === id);
   return user ? user : null;
 }
+
+
+// Provided Encoded code by GONG team
 
 const poision = [
   156, 33, 64, 174, 120, 204, 69, 242, 177, 98, 16, 244, 75, 5, 21, 7, 145, 39,
