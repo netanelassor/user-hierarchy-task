@@ -15,10 +15,10 @@ export default function HeaderNavigation(): JSX.Element {
   ];
   return (
     <div className="flex gap-6 text-sm text-violet-900">
-      {SidebarList.map((navItem: NavItemType, index) => {
+      {SidebarList.map((navItem: NavItemType) => {
         return (
           <NavLink
-            key={index}
+            key={navItem.name}
             to={navItem.routeName}
             className={({ isActive, isPending }) =>
               `hover:font-bold ${

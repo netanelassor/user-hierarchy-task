@@ -42,9 +42,9 @@ export default function UserNode({
       </div>
 
       {groupedByManagerId[user.id]
-        ? groupedByManagerId[user.id].map((employee, employeeIndex) => {
+        ? groupedByManagerId[user.id].map((employee) => {
             return (
-              <div className="px-12" key={employeeIndex}>
+              <div className="px-12" key={employee.id}>
                 <UserNode
                   user={employee}
                   groupedByManagerId={groupedByManagerId}
