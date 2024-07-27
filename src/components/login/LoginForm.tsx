@@ -25,8 +25,6 @@ export default function LoginForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isWrongLogin, setIsWrongLogin] = useState<boolean>(false);
 
-
-
   async function handleLogin(event: any):Promise<void> {
     setIsWrongLogin(false);
     setIsLoading(true);

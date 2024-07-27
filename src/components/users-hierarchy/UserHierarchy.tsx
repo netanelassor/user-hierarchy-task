@@ -4,13 +4,18 @@ import { User } from "./user.types";
 import UserNode from "./user-node/UserNode";
 import { USER_HIERARCHY } from "../../constants/locals/en-Us.constants";
 import Loading from "../shared/Loading";
+import { useMemo } from "react";
 
 export default function UserHierarchy(): JSX.Element {
   const { data: users, isPending } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
   });
-  const usersByManagers = users ? groupByManagerId(users) : null;
+
+  const usersByManagers = useMemo(
+    () => (users ? groupByManagerId(users) : null),
+    [users]
+  );
 
   return (
     <>
@@ -21,15 +26,15 @@ export default function UserHierarchy(): JSX.Element {
 
       {usersByManagers && (
         <div className="flex flex-col text-start gap-4 p-2">
-          {usersByManagers.root?.map((usr: User, index) => {
-              return (
-                <UserNode
-                  key={index}
-                  user={usr}
-                  groupedByManagerId={usersByManagers}
-                />
-              );
-            })}
+          {usersByManagers.root?.map((usr: User) => {
+            return (
+              <UserNode
+                key={usr.id}
+                user={usr}
+                groupedByManagerId={usersByManagers}
+              />
+            );
+          })}
         </div>
       )}
     </>

@@ -56,9 +56,9 @@ export default function AboutMe(): JSX.Element {
             <Card className="flex-1">
               <h3 className="text-start font-bold">{ABOUT_ME.EXPERIENCE}</h3>
               <div className="flex flex-col gap-10 text-start items-start">
-                {cvData.experience.map((job) => {
+                {cvData.experience.map((job, index) => {
                   return (
-                    <div>
+                    <div key={index}>
                       <div className="font-semibold">
                         {job.date_range} | {job.title}
                       </div>
