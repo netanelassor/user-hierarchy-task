@@ -38,15 +38,10 @@ Make sure you have the following installed on your machine:
    npm run start
    ```
 
-2. **Navigate back to the root folder and install frontend dependencies:**
+2. **Navigate back to the root folder and Start the React frontend:**
 
    ```bash
    cd ..
-   npm install
-   ```
-
-3. **Start the React frontend:**
-   ```bash
    npm run dev
    ```
 
