@@ -22,7 +22,7 @@ Make sure you have the following installed on your machine:
    npm install
    ```
 
-   2. **Navigate to the backend folder and install dependencies:**
+2. **Navigate to the backend folder and install dependencies:**
 
    ```bash
    cd src/backend
