@@ -1,11 +1,10 @@
 import { ENDPOINT } from "../../constants/endpoints.constants";
-import { setUserInLocalStorage } from "../../utils/auth";
-import { User } from "../users-hierarchy/user.types";
 import { LoginData } from "./login.types";
 
 export async function fetchLogin(loginData: LoginData): Promise<number | null> {
   const secret = encode(loginData);
-  const response = await fetch(`${ENDPOINT.login}/${secret}.json`);
+  
+  const response = await fetch(`${ENDPOINT.login}/${secret}`);
 
   if (!response.ok) {
     const error: any = new Error("An error occurred while fetching the events");
@@ -13,22 +12,9 @@ export async function fetchLogin(loginData: LoginData): Promise<number | null> {
     error.info = await response.json();
     throw error;
   }
-  const userId: number = await response.json();
+  const { userId }: { userId: number } = await response.json();
   return userId;
 }
-
-export function loginActions(users: User[], id: number) {
-  const user: User | null = gethUserDetails(users, id);
-  if (user) {
-    setUserInLocalStorage(user);
-  }
-}
-
-function gethUserDetails(users: User[], id: number): User | null {
-  const user = users.find((usr: User) => usr.id === id);
-  return user ? user : null;
-}
-
 
 // Provided Encoded code by GONG team
 

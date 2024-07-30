@@ -1,8 +1,8 @@
 import { ENDPOINT } from "../../constants/endpoints.constants";
 import { User, UserMap } from "./user.types";
 
-export async function fetchUsers({ signal }:any): Promise<User[] | null> {
-  const response = await fetch(`${ENDPOINT.getUser}.json`, { signal });
+export async function fetchUsers({ signal }: any): Promise<User[] | null> {
+  const response = await fetch(`${ENDPOINT.getUsers}`, { signal });
 
   if (!response.ok) {
     const error: any = new Error("An error occurred while fetching the events");
@@ -10,13 +10,25 @@ export async function fetchUsers({ signal }:any): Promise<User[] | null> {
     error.info = await response.json();
     throw error;
   }
-  const userList = await response.json();
-  return userList;
+  const {users} = await response.json();
+  return users;
 }
 
+export async function fetchUser(id:number): Promise<User | null> {
+  const response = await fetch(`${ENDPOINT.getUsers}/${id}`);
 
-export function groupByManagerId(users: User[]): UserMap {
-  return users.reduce((usrMap, usr) => {
+  if (!response.ok) {
+    const error: any = new Error("An error occurred while fetching the events");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+  const {user} = await response.json();
+  return user;
+}
+
+export function groupByManagerId(users: User[] = []): UserMap {
+  const gropedByUsers = users.reduce((usrMap, usr) => {
     const managerId = usr.managerId || "root";
     if (managerId) {
       if (!usrMap[managerId]) {
@@ -26,4 +38,6 @@ export function groupByManagerId(users: User[]): UserMap {
     }
     return usrMap;
   }, {} as UserMap);
+
+  return gropedByUsers;
 }

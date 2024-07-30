@@ -1,18 +1,14 @@
 import { Button, Card, Label, TextInput } from "flowbite-react";
 import { LoginData } from "./login.types";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GENERAL, LOGIN } from "../../constants/locals/en-Us.constants";
 import Logo from "../../assets/gong.svg";
-import { fetchLogin, loginActions } from "./login.service";
-import { fetchUsers } from "../users-hierarchy/users-hierarchy.service";
-import { queryClient } from "../../utils/query-client";
+import { fetchLogin } from "./login.service";
+import { fetchUser } from "../users-hierarchy/users-hierarchy.service";
+import { setUserInLocalStorage } from "../../utils/auth";
+import { useQuery } from "@tanstack/react-query";
 
-const getUsers = () => queryClient.fetchQuery({ queryKey: ["users"], queryFn: fetchUsers });
-const setLogin = (data:LoginData) => queryClient.fetchQuery({
-  queryKey: ["login"],
-  queryFn: () => fetchLogin(data),
-});
 
 const demoLoginUser: LoginData = {
   password: "4XdnU2aZ",
@@ -22,32 +18,35 @@ const demoLoginUser: LoginData = {
 export default function LoginForm(): JSX.Element {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginData>(demoLoginUser);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isWrongLogin, setIsWrongLogin] = useState<boolean>(false);
 
-  async function handleLogin(event: any):Promise<void> {
-    setIsWrongLogin(false);
-    setIsLoading(true);
-    event.preventDefault();
-    try {
-      const loggedUserId = await setLogin(formData);
+  const {
+    refetch,
+    data: userId,
+    isLoading: loginIsLoading,
+    isError
+  } = useQuery({
+    queryKey: ["login"],
+    queryFn: () => fetchLogin(formData),
+    enabled: false,
+  });
 
-      if (!loggedUserId) {
-        setIsWrongLogin(true);
-        return;
-      }
+  const { data: user, isLoading: getUserLoading } = useQuery({
+    queryKey: ["users", userId],
+    queryFn: () => (userId ? fetchUser(userId) : null),
+    enabled: !!userId,
+  });
 
-      const users = await getUsers();
-      if (users && loggedUserId) {
-        loginActions(users, loggedUserId);
-        navigate("../");
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-
+  useEffect(() => {
+    if (user) {
+      setUserInLocalStorage(user);
+      navigate("../");
     }
+    return () => {};
+  }, [user]);
+
+  async function handleLogin(event: any): Promise<void> {
+    event.preventDefault();
+    await refetch();
   }
 
   const handleInputChange = (event: any) => {
@@ -109,13 +108,13 @@ export default function LoginForm(): JSX.Element {
                 gradientDuoTone="purpleToBlue"
                 pill
                 type="submit"
-                disabled={!formData.email || !formData.password || isLoading}
-                isProcessing={isLoading}
+                disabled={!formData.email || !formData.password || loginIsLoading || getUserLoading}
+                isProcessing={loginIsLoading || getUserLoading}
               >
                 {LOGIN.LOGIN_BTN}
               </Button>
             </div>
-            {isWrongLogin && <div>{LOGIN.VALIDATION_FAILED}</div>}
+            {isError && <div>{LOGIN.VALIDATION_FAILED}</div>}
           </form>
         </Card>
       </div>
