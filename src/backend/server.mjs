@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
+    "GET, POST, PUT, DELETE, OPTIONS, PATCH"
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -67,39 +67,40 @@ app.get("/users/:id", async (req, res) => {
   }
 });
 
-// app.patch("/users", async (req, res) => {
-//   const { student } = req.body;
+app.patch("/users/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { user } = req.body;
 
-//   if (!student) {
-//     return res.status(400).json({ message: "Student is required" });
-//   }
+  if (!user) {
+    return res.status(400).json({ message: "User" });
+  }
 
-//   if (
-//     !student.id?.trim() ||
-//     !student.firstName?.trim() ||
-//     !student.lastName?.trim() ||
-//     !student.gender?.trim() ||
-//     !student.birthday?.trim() ||
-//     !student.profileImgUrl?.trim() ||
-//     !student.parentContact
-//   ) {
-//     return res.status(400).json({ message: "Invalid data provided." });
-//   }
+  if (
+    !user.firstName?.trim() ||
+    !user.lastName?.trim() ||
+    !user.email?.trim() 
+  ) {
+    return res.status(400).json({ message: "Invalid data provided." });
+  }
 
-//   const studentsFileContent = await fs.readFile("./data/students.json");
-//   const studentList = JSON.parse(studentsFileContent);
+  const usersFileContent = await fs.readFile("./data/users.json");
+  const users = JSON.parse(usersFileContent);
 
-//   const newStudent = {
-//     intId: Math.round(Math.random() * 10000).toString(),
-//     ...student,
-//   };
+  const userIndex = users.findIndex((usr) => usr.id === id);
 
-//   studentList.push(newStudent);
+  if (userIndex === -1) {
+    return res.status(404).json({ message: 'Event not found' });
+  }
 
-//   await fs.writeFile("./data/students.json", JSON.stringify(studentList));
+  users[userIndex] = {
+    id,
+    ...user,
+  };
 
-//   res.json({ student: newStudent });
-// });
+  await fs.writeFile("./data/users.json", JSON.stringify(users));
+
+  res.json({ users: users[userIndex] });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port number ${port}`);

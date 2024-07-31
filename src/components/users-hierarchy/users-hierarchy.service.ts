@@ -27,6 +27,25 @@ export async function fetchUser(id:number): Promise<User | null> {
   return user;
 }
 
+export async function updateUser({id, firstName, lastName, email}:Partial<User>): Promise<User | null> {
+  const response = await fetch(`${ENDPOINT.getUsers}/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({user:{firstName, lastName, email}} ),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error: any = new Error("An error occurred while updating the user");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  return response.json();
+}
+
 export function groupByManagerId(users: User[] = []): UserMap {
   const gropedByUsers = users.reduce((usrMap, usr) => {
     const managerId = usr.managerId || "root";

@@ -1,6 +1,8 @@
 export const GENERAL = {
   COMPANY_NAME: "Gong",
   LOADING: "Loading...",
+  UPDATE_BTN: "Update",
+  CANCEL_BTN: "Cancel"
 };
 
 export const HEADER = {
@@ -18,12 +20,18 @@ export const LOGIN = {
   EMAIL: "Email Address",
   PASSWORD: "Password",
   LOGIN_BTN: "Login",
-  TITLE:"Sign in to your account",
+  TITLE: "Sign in to your account",
   VALIDATION_FAILED: "The username or password is incorrect",
 };
 
 export const USER_HIERARCHY = {
   TITLE: "User Hierarchy",
+  EDIT_USER: {
+    FIRST_NAME_LBL: "First Name",
+    LAST_NAME_LBL: "Last Name",
+    EMAIL_LBL: "Email",
+    
+  },
 };
 
 export const ERROR_PAGE = {
